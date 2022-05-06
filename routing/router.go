@@ -2789,8 +2789,14 @@ func (r *ChannelRouter) BuildRoute(amt *lnwire.MilliSatoshi,
 	for i, edge := range edges {
 		policy := edge.getPolicy(receiverAmt, bandwidthHints)
 		if policy == nil {
+			var fromNode route.Vertex
+			if i == 0 {
+				fromNode = source
+			} else {
+				fromNode = hops[i-1]
+			}
 			return nil, ErrNoChannel{
-				fromNode: hops[i-1],
+				fromNode: fromNode,
 				position: i,
 			}
 		}
